@@ -51,10 +51,19 @@ int main() {
                     // Determine if we should include the item based on rules
                     bool canInclude = true;
                     for (int r = 0; r < amountR; ++r) {
-                        if (rule[r] == item[i - 1]) {
-                            if (w < vw[i - 1][0] + rulevw[r][0] || c[i - 1][w - vw[i - 1][0]] < rulevw[r][1])
-                                canInclude = false;
+                        for (int j = 0; j < i-2; j++) {
+                            
+                            if (rule[r].find(item[i - 1])<rule[r].length() && rule[r].find(item[j]) < rule[r].length()) {
+                                if (w < vw[i - 1][0] + rulevw[r][0] || c[i - 1][w - vw[i - 1][0]] < rulevw[r][1]) {
+                                    canInclude = false;
+                                    break;
+                                }
+                                
+
+                            }
                         }
+
+                        
                     }
                     if (canInclude) {
                         c[i][w] = max(c[i - 1][w], c[i - 1][w - vw[i - 1][0]] + vw[i - 1][1]);
@@ -82,10 +91,39 @@ int main() {
 
         // Output chosen items and their weights
         //cout << "Chosen items: ";
+        int r = 0;
+        vector<bool> isPrinted(amountR);
         for (int i = chosenItems.size() - 1; i >= 0; --i) {
             //cout << item[chosenItems[i] - 1] << " ";
+            for (r = 0; r < amountR; ++r) {
+               
+                for (int j = chosenItems.size() - 1; j >= 0; --j) {
+                    
+                    if (i == j)
+                        continue;
+                    if (rule[r].find(item[chosenItems[j] - 1]) < rule[r].length() && rule[r].find(item[chosenItems[i] - 1]) < rule[r].length()) {
+                        if (!isPrinted[r]) {
+                            outFile << rule[r] << endl;
+                            isPrinted[r] = true;
+                            
+                        }
+                    }
+                    //cout << item[chosenItems[i] - 1] << " ";
+
+                }
+                if (isPrinted[r])
+                    continue;
+            }
+
+        
+            if (isPrinted[r])
+                continue;
             outFile << item[chosenItems[i] - 1] << endl;
         }
+        
+        
+     
+       
         //cout << endl;
         //cout << "Total weight of chosen items: " << containerSize - remainingCapacity << endl;
     }
